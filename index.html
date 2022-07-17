@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script> 
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+<title>Bruxelles Show order</title>
+<style>
+img {
+    width: 50vw;
+    height: 10vw;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+	
+	button{
+		font-size: 2vw;
+		width: 12vw;
+		height: 4vw;
+		margin: 1vw;
+					background: #A07620;
+			border: 0;
+			box-shadow: 0.5vw 0.5vw 1vw 0.01vw #999;
+		border-radius: 7px;
+color: antiquewhite;
+	}
+		button:active{
+		background: #FED497;
+	
+	}
+	.seller{
+		text-align: end;
+		margin-top: -3vw;
+	}
+	#times{
+		
+		width: 50vw;
+		margin: 0 auto;
+	}
+	
+	h1 {
+		font-size: 8vw;
+		text-align: center;}
+	
+	
+	
+	.orderCard{
+		width: 50vw;
+		background:#FED9A4;
+		border-radius: 10px;
+		padding: 1vw;
+		margin: 1vw auto;
+		position: relative;
+	}
+	
+	.done{
+		width: 3vw;
+		height: 3vw;
+		position: absolute;
+		border-radius: 50vw;
+		text-align: center;
+		font-size: 2vw;
+		background: #A07620;
+line-height: 3vw;	
+	top: 1vw;;
+		right: 1vw;
+	
+	}
+
+@media (max-width: 414px) {
+}
+
+@media (max-width: 768px) {
+}
+
+@media (max-width: 1200px) {
+}
+
+@media (min-width: 415px) {
+}
+
+@media (min-width: 769px) {
+}
+
+@media (min-width: 1201px) {
+}
+</style>
+</head>
+
+<body>
+<img src="291629217_453851623413932_6074956284834990941_n.jpg" alt="">
+	
+	<div id="times"><button onClick="allTime()">All Time</button><button onClick="today()">Today</button><button onClick="dones()">Done</button></div>
+	<h1>Today</h1>
+<div id="continent">
+  <div class="orderCard">
+    <h2 class="customer"><em>Anas</em></h2>
+    <p class="order"> <strong>Cake 5s </strong> <br>
+      <p class="description">sfasdjasjbfdlkjasbfkljasb</p></p>
+    <h2 class="date">Date: <em>22-05-16</em></h2>
+    <h2 class="seller"><em>Jack</em></h2>
+    <div class="done">X</div>
+  </div>
+	  <div class="orderCard">
+    <h2 class="customer">Anas</h2>
+    <p class="order"> <strong>Cake 5s </strong> <br>
+      <p class="description">sfasdjasjbfdlkjasbfkljasb</p></p>
+    <h2 class="date">Date: <em>22-05-16</em></h2>
+    <h2 class="seller"><em>Jack</em></h2>
+    <div class="done">X</div>
+  </div>
+
+</div>
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBiGQWCKHvhYthDl1o2mhmbz2-fDZiLLzQ",
+  authDomain: "brussel-800ea.firebaseapp.com",
+  projectId: "brussel-800ea",
+  storageBucket: "brussel-800ea.appspot.com",
+  messagingSenderId: "1056147798778",
+  appId: "1:1056147798778:web:2b451ed24b19c428316743"
+};
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+	
+	var db = firebase.firestore();
+   db.settings({ timestampsInSnapshots: true }); 
+
+
+</script> 
+<script>
+	var todayd= new Date();
+	var dayd = todayd.getDate();
+	var yeard= todayd.getFullYear();
+	var mmd= todayd.getMonth()+1;
+
+	var fd; 
+	if (mmd<10&&dayd<10) {	fd= yeard + "-0" + mmd + "-0" + dayd; 
+} else if ((mmd>10&&dayd<10)){fd= yeard + "-" + mmd + "-0" + dayd;
+	
+}else if ((mmd<10&&dayd>10)){fd= yeard + "-0" + mmd + "-" + dayd;
+		}else {fd= yeard + "-" + mmd + "-" + dayd;}
+	
+	const ordersList = document.querySelector('#continent');
+	
+
+	function renderCafeallTime(doc){
+		if (doc.data().notDone) {
+    let orderElem = document.createElement('div');
+		orderElem.setAttribute("class", "orderCard");
+		orderElem.innerHTML= '<h2 class="customer">' + doc.data().name +' </h2>\
+    <p class="order"> <strong>' + doc.data().order +'</strong> <br>\
+      <p class="description">' + doc.data().description +'</p></p>\
+    <h2 class="date">Date: <em>' + doc.data().date + '</em></h2>\
+    <h2 class="seller"><em>' + doc.data().seller +'</em></h2>\
+    <div class="done">X</div>';
+		
+    ordersList.appendChild(orderElem);
+}}
+	
+		function renderCafeDone(doc){
+		if (!doc.data().notDone) {
+    let orderElem = document.createElement('div');
+		orderElem.setAttribute("class", "orderCard");
+		orderElem.innerHTML= '<h2 class="customer">' + doc.data().name +' </h2>\
+    <p class="order"> <strong>' + doc.data().order +'</strong> <br>\
+      <p class="description">' + doc.data().description +'</p></p>\
+    <h2 class="date">Date: <em>' + doc.data().date + '</em></h2>\
+    <h2 class="seller"><em>' + doc.data().seller +'</em></h2>\
+    <div class="done">X</div>';
+		
+    ordersList.appendChild(orderElem);
+}}
+	function renderCafeToday(doc){
+		if (doc.data().notDone && doc.data().date == fd) {
+    let orderElem = document.createElement('div');
+		orderElem.setAttribute("class", "orderCard");
+		orderElem.innerHTML= '<h2 class="customer">' + doc.data().name +' </h2>\
+    <p class="order"> <strong>' + doc.data().order +'</strong> <br>\
+      <p class="description">' + doc.data().description +'</p></p>\
+    <h2 class="date">Date: <em>' + doc.data().date + '</em></h2>\
+    <h2 class="seller"><em>' + doc.data().seller +'</em></h2>\
+    <div class="done">X</div>';
+		
+    ordersList.appendChild(orderElem);
+}}
+	
+	function allTime() {
+		ordersList.innerHTML="";
+	db.collection('orders').get().then(snapshot => {
+		console.log("access");
+    snapshot.docs.forEach(doc => {
+        renderCafeallTime(doc);
+    });
+});}
+	function dones() {
+		ordersList.innerHTML="";
+	db.collection('orders').get().then(snapshot => {
+		console.log("access");
+    snapshot.docs.forEach(doc => {
+        renderCafeDone(doc);
+    });
+});}
+	function today() {
+		ordersList.innerHTML="";
+	db.collection('orders').get().then(snapshot => {
+    snapshot.docs.forEach(doc => {
+		console.log("access" + fd + "/" + doc.data().date );
+
+        renderCafeToday(doc);
+    });
+});}
+
+	</script>
+</body>
+</html>
