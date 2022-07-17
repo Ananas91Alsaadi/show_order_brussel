@@ -65,7 +65,7 @@ color: antiquewhite;
 line-height: 3vw;	
 	top: 1vw;;
 		right: 1vw;
-	
+	cursor: pointer;
 	}
 
 @media (max-width: 414px) {
@@ -88,28 +88,12 @@ line-height: 3vw;
 </style>
 </head>
 
-<body>
+<body onload="today()">
 <img src="291629217_453851623413932_6074956284834990941_n.jpg" alt="">
 	
 	<div id="times"><button onClick="allTime()">All Time</button><button onClick="today()">Today</button><button onClick="dones()">Done</button></div>
-	<h1>Today</h1>
+	<h1 id="heads">Today</h1>
 <div id="continent">
-  <div class="orderCard">
-    <h2 class="customer"><em>Anas</em></h2>
-    <p class="order"> <strong>Cake 5s </strong> <br>
-      <p class="description">sfasdjasjbfdlkjasbfkljasb</p></p>
-    <h2 class="date">Date: <em>22-05-16</em></h2>
-    <h2 class="seller"><em>Jack</em></h2>
-    <div class="done">X</div>
-  </div>
-	  <div class="orderCard">
-    <h2 class="customer">Anas</h2>
-    <p class="order"> <strong>Cake 5s </strong> <br>
-      <p class="description">sfasdjasjbfdlkjasbfkljasb</p></p>
-    <h2 class="date">Date: <em>22-05-16</em></h2>
-    <h2 class="seller"><em>Jack</em></h2>
-    <div class="done">X</div>
-  </div>
 
 </div>
 <script>
@@ -145,17 +129,28 @@ const firebaseConfig = {
 	
 	const ordersList = document.querySelector('#continent');
 	
+	function move(id){
+				console.log(id);
+
+		db.collection("orders").doc(id).update({notDone:false}).then(allTime());
+	}
+	function movetoday(id){
+				console.log(id);
+
+		db.collection("orders").doc(id).update({notDone:false}).then(today());
+	}
 
 	function renderCafeallTime(doc){
 		if (doc.data().notDone) {
     let orderElem = document.createElement('div');
 		orderElem.setAttribute("class", "orderCard");
+
 		orderElem.innerHTML= '<h2 class="customer">' + doc.data().name +' </h2>\
     <p class="order"> <strong>' + doc.data().order +'</strong> <br>\
       <p class="description">' + doc.data().description +'</p></p>\
     <h2 class="date">Date: <em>' + doc.data().date + '</em></h2>\
     <h2 class="seller"><em>' + doc.data().seller +'</em></h2>\
-    <div class="done">X</div>';
+    <div class="done" id="'+doc.id+'" onClick="move(this.id)">X</div>';
 		
     ordersList.appendChild(orderElem);
 }}
@@ -169,8 +164,8 @@ const firebaseConfig = {
       <p class="description">' + doc.data().description +'</p></p>\
     <h2 class="date">Date: <em>' + doc.data().date + '</em></h2>\
     <h2 class="seller"><em>' + doc.data().seller +'</em></h2>\
-    <div class="done">X</div>';
-		
+		    <div class="done">X</div>';
+
     ordersList.appendChild(orderElem);
 }}
 	function renderCafeToday(doc){
@@ -182,12 +177,15 @@ const firebaseConfig = {
       <p class="description">' + doc.data().description +'</p></p>\
     <h2 class="date">Date: <em>' + doc.data().date + '</em></h2>\
     <h2 class="seller"><em>' + doc.data().seller +'</em></h2>\
-    <div class="done">X</div>';
+    <div class="done" id="'+doc.id+'" onClick="movetoday(this.id)">X</div>';
+
 		
     ordersList.appendChild(orderElem);
 }}
 	
 	function allTime() {
+				document.getElementById("heads").innerHTML="All Time";
+
 		ordersList.innerHTML="";
 	db.collection('orders').get().then(snapshot => {
 		console.log("access");
@@ -196,6 +194,8 @@ const firebaseConfig = {
     });
 });}
 	function dones() {
+				document.getElementById("heads").innerHTML="Done";
+
 		ordersList.innerHTML="";
 	db.collection('orders').get().then(snapshot => {
 		console.log("access");
@@ -204,14 +204,19 @@ const firebaseConfig = {
     });
 });}
 	function today() {
+		document.getElementById("heads").innerHTML="Today";
 		ordersList.innerHTML="";
 	db.collection('orders').get().then(snapshot => {
     snapshot.docs.forEach(doc => {
-		console.log("access" + fd + "/" + doc.data().date );
+		console.log("access" + fd + "/" + doc.data().date + "*" + doc.id );
 
         renderCafeToday(doc);
     });
 });}
+	
+	
+	//db.collection("cities").doc("DC").delete().then(() => {
+
 
 	</script>
 </body>
